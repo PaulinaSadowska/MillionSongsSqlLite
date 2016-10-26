@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Paulina Sadowska on 26.10.2016.
  */
-public class DataManager
+public class DatabaseManager
 {
     public static final String DATABASE_URL = "jdbc:sqlite:million.songs.standard.database";
 
@@ -16,20 +16,18 @@ public class DataManager
     private Connection connection = null;
     private Statement statement = null;
 
-    public DataManager()
+    public DatabaseManager()
     {
         try {
             connection = DriverManager.getConnection(DATABASE_URL);
-            connection.setAutoCommit(false);
             statement = connection.createStatement();
             System.out.println("Opened database successfully");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
-        createListenRecordTable();
     }
 
-    private boolean createListenRecordTable()  {
+    public boolean createListenRecordTable()  {
         final String createListenRecordQuery =
                 "CREATE TABLE IF NOT EXISTS " + LISTEN_RECORD_TABLE + " (songId varchar(18), userId varchar(18), timestamp INTEGER);";
         try {

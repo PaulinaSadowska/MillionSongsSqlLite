@@ -1,4 +1,5 @@
 import dataObjects.ListenRecord;
+import directories.FileNameProviderTest;
 
 /**
  * Created by Paulina Sadowska on 26.10.2016.
@@ -6,8 +7,9 @@ import dataObjects.ListenRecord;
 public class Program
 {
     public static void main( String args[] ){
-        DataManager dataManager = new DataManager();
-        dataManager.insertListenRecord(new ListenRecord("b80344d063b5ccb3212f76538f3d9e43d87dca9e<SEP>SOUKOKB12ABGSDFGS8<SEP>1043412324"));
+        DatabaseManager dataManager = new DatabaseManager();
+        DataProvider dataProvider = new DataProvider(new FileNameProviderTest(), dataManager);
+        dataProvider.insertListensData();
         dataManager.selectListenRecord();
     }
 }

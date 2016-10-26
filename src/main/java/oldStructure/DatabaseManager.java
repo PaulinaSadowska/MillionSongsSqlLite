@@ -2,6 +2,9 @@ package oldStructure;
 
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
+import oldStructure.TableManager.ITableManager;
+import oldStructure.TableManager.ListenTableManager;
+import oldStructure.TableManager.UniqueTrackTableManager;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -19,6 +22,8 @@ public class DatabaseManager
 
     private Connection connection = null;
     private Statement statement = null;
+    private ITableManager<UniqueTrack> uniqueTrackManager;
+    private ITableManager<ListenRecord> listenRecordManager;
 
     public DatabaseManager()
     {
@@ -29,132 +34,36 @@ public class DatabaseManager
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
+        uniqueTrackManager = new UniqueTrackTableManager();
+        listenRecordManager = new ListenTableManager();
     }
 
     public boolean createListenRecordTable()  {
-        final String createListenRecordQuery =
-                "CREATE TABLE IF NOT EXISTS " + LISTEN_RECORD_TABLE + " (songId varchar(18), userId varchar(18), timestamp INTEGER);";
-        try {
-            statement.execute(createListenRecordQuery);
-        } catch (SQLException e) {
-            System.err.println("Error while creating record table");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return listenRecordManager.createTable(statement);
     }
 
     public boolean createUniqueTrackTable()  {
-        final String createListenRecordQuery =
-                "CREATE TABLE IF NOT EXISTS " + UNIQUE_TRACKS_TABLE + " (performanceId varchar(18), songId varchar(18), " +
-                        "artist varchar(80), title varchar(80));";
-        try {
-            statement.execute(createListenRecordQuery);
-        } catch (SQLException e) {
-            System.err.println("Error while creating tracks table");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return uniqueTrackManager.createTable(statement);
     }
 
-    private boolean insertListenRecord(ListenRecord listenRecord) {
-        try {
-            PreparedStatement prepStmt = connection.prepareStatement(
-                    "insert into " + LISTEN_RECORD_TABLE + " values (?, ?, ?);");
-            prepStmt.setString(1, listenRecord.getSongId());
-            prepStmt.setString(2, listenRecord.getUserId());
-            prepStmt.setInt(3, listenRecord.getTimestamp());
-            prepStmt.execute();
-        } catch (SQLException e) {
-            System.err.println("Error while inserting listen record");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
     public List<ListenRecord> selectListenRecord() {
-        List<ListenRecord> listenRecords = new LinkedList<ListenRecord>();
-        try {
-            ResultSet result = statement.executeQuery("SELECT * FROM " + LISTEN_RECORD_TABLE);
-            while(result.next()) {
-                String songId = result.getString("songId");
-                String userId = result.getString("userId");
-                int timestamp = result.getInt("timestamp");
-                listenRecords.add(new ListenRecord(songId, userId, timestamp));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return listenRecords;
+        return listenRecordManager.selectAll(statement);
     }
 
-    private boolean insertUniqueTracksData(UniqueTrack uniqueTrack)
-    {
-        try {
-            PreparedStatement prepStmt = connection.prepareStatement(
-                    "insert into " + UNIQUE_TRACKS_TABLE + " values (?, ?, ?, ?);");
-            prepStmt.setString(1, uniqueTrack.getPerformanceId());
-            prepStmt.setString(2, uniqueTrack.getSongId());
-            prepStmt.setString(3, uniqueTrack.getArtist());
-            prepStmt.setString(4, uniqueTrack.getTitle());
-            prepStmt.execute();
-        } catch (SQLException e) {
-            System.err.println("Error while inserting listen record");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    public List<UniqueTrack> selectUniqueTracks() {
+        return uniqueTrackManager.selectAll(statement);
     }
 
     public void insertUniqueTracksData(List<UniqueTrack> bulkedData)
     {
-        try
-        {
-            connection.setAutoCommit(false);
-            bulkedData.forEach(this::insertUniqueTracksData);
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        uniqueTrackManager.insertRecords(bulkedData, connection);
     }
 
     public void insertListensRecord(List<ListenRecord> bulkedData)
     {
-        try
-        {
-            connection.setAutoCommit(false);
-            bulkedData.forEach(this::insertListenRecord);
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        listenRecordManager.insertRecords(bulkedData, connection);
     }
-
-    protected List<UniqueTrack> selectUniqueTracks() {
-        List<UniqueTrack> uniqueTracks = new LinkedList<>();
-        try {
-            ResultSet result = statement.executeQuery("SELECT * FROM " + UNIQUE_TRACKS_TABLE);
-            while(result.next()) {
-                String perfId = result.getString("performanceId");
-                String songId = result.getString("songId");
-                String userId = result.getString("artist");
-                String title = result.getString("title");
-                uniqueTracks.add(new UniqueTrack(perfId, songId, userId, title));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return uniqueTracks;
-    }
-
 
     protected void dropTable(String tableName)
     {

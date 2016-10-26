@@ -1,4 +1,5 @@
 import directories.FileNameProvider;
+import directories.FileNameProviderTest;
 import oldStructure.DataProvider;
 
 /**
@@ -7,10 +8,12 @@ import oldStructure.DataProvider;
 public class Program
 {
     public static void main( String args[] ){
-        DataProvider dataProvider = new DataProvider(new FileNameProvider());
+        DataProvider dataProvider = new DataProvider(new FileNameProviderTest());
         //dataProvider.insertListensData();
         long currentTime = System.currentTimeMillis();
         dataProvider.insertUniqueTracksData();
         System.out.println("inserting tracks took: " + (System.currentTimeMillis() - currentTime) + "ms");
+        dataProvider.insertListensData();
+        System.out.println("inserting listens took: " + (System.currentTimeMillis() - currentTime) + "ms");
     }
 }

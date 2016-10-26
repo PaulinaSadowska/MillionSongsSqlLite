@@ -1,7 +1,7 @@
 package oldStructure;
 
-import dataObjects.ListenRecord;
-import dataObjects.UniqueTrack;
+import dataObjects.oldScheme.ListenRecord;
+import dataObjects.oldScheme.UniqueTrack;
 import directories.IFileNameProvider;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class DataProvider
     private IFileNameProvider _FileNameProvider;
     private DatabaseManager _DatabaseManager;
 
-    private static final int BULK_SIZE = 1000;
+    private static final int BULK_SIZE = 500;
 
     public DataProvider(IFileNameProvider fileNameProvider){
         this._FileNameProvider = fileNameProvider;
@@ -31,16 +31,24 @@ public class DataProvider
     {
         _DatabaseManager.dropTable(DatabaseManager.LISTEN_RECORD_TABLE);
         _DatabaseManager.createListenRecordTable();
+        List<ListenRecord> bulkedData = new ArrayList<>();
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName()))) {
             stream.forEach(s -> {
-                _DatabaseManager.insertListenRecord(new ListenRecord(s));
+                bulkedData.add(new ListenRecord(s));
+                if (bulkedData.size() > BULK_SIZE)
+                {
+                    _DatabaseManager.insertListensRecord(bulkedData);
+                    bulkedData.clear();
+                }
             });
-
+            if(bulkedData.size()>0)
+            {
+                _DatabaseManager.insertListensRecord(bulkedData);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     public void insertUniqueTracksData()
     {
@@ -50,13 +58,16 @@ public class DataProvider
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getSongsFileName()), StandardCharsets.ISO_8859_1)) {
             stream.forEach(s -> {
                 bulkedData.add(new UniqueTrack(s));
-                if(bulkedData.size()>BULK_SIZE)
+                if (bulkedData.size() > BULK_SIZE)
                 {
                     _DatabaseManager.insertUniqueTracksData(bulkedData);
                     bulkedData.clear();
                 }
-                _DatabaseManager.insertUniqueTracksData(new UniqueTrack(s));
             });
+            if(bulkedData.size()>0)
+            {
+                _DatabaseManager.insertUniqueTracksData(bulkedData);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

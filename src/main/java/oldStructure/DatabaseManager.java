@@ -1,10 +1,9 @@
 package oldStructure;
 
-import dataObjects.ListenRecord;
-import dataObjects.UniqueTrack;
+import dataObjects.oldScheme.ListenRecord;
+import dataObjects.oldScheme.UniqueTrack;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class DatabaseManager
         return true;
     }
 
-    public boolean insertListenRecord(ListenRecord listenRecord) {
+    private boolean insertListenRecord(ListenRecord listenRecord) {
         try {
             PreparedStatement prepStmt = connection.prepareStatement(
                     "insert into " + LISTEN_RECORD_TABLE + " values (?, ?, ?);");
@@ -92,7 +91,7 @@ public class DatabaseManager
         return listenRecords;
     }
 
-    public boolean insertUniqueTracksData(UniqueTrack uniqueTrack)
+    private boolean insertUniqueTracksData(UniqueTrack uniqueTrack)
     {
         try {
             PreparedStatement prepStmt = connection.prepareStatement(
@@ -122,10 +121,23 @@ public class DatabaseManager
         {
             e.printStackTrace();
         }
-
     }
 
-    public List<UniqueTrack> selectUniqueTracks() {
+    public void insertListensRecord(List<ListenRecord> bulkedData)
+    {
+        try
+        {
+            connection.setAutoCommit(false);
+            bulkedData.forEach(this::insertListenRecord);
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    protected List<UniqueTrack> selectUniqueTracks() {
         List<UniqueTrack> uniqueTracks = new LinkedList<>();
         try {
             ResultSet result = statement.executeQuery("SELECT * FROM " + UNIQUE_TRACKS_TABLE);
@@ -144,7 +156,7 @@ public class DatabaseManager
     }
 
 
-    public void dropTable(String tableName)
+    protected void dropTable(String tableName)
     {
         final String dropTableQuery =
                 "DROP TABLE " + tableName;

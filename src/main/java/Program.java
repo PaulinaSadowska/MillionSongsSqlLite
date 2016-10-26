@@ -1,5 +1,6 @@
+import database.DatabaseManagerOld;
 import directories.FileNameProviderTest;
-import DataProvider.DataProviderOld;
+import DataProvider.DataProvider;
 
 /**
  * Created by Paulina Sadowska on 26.10.2016.
@@ -8,7 +9,7 @@ public class Program
 {
     public static void main( String args[] ){
 
-        DataProviderOld dataProvider = new DataProviderOld(new FileNameProviderTest());
+        DataProvider dataProvider = new DataProvider(new FileNameProviderTest(), new DatabaseManagerOld());
 
         long currentTime = System.currentTimeMillis();
         dataProvider.insertUniqueTracksData();

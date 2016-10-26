@@ -1,4 +1,3 @@
-import dataObjects.ListenRecord;
 import directories.FileNameProviderTest;
 
 /**
@@ -7,9 +6,8 @@ import directories.FileNameProviderTest;
 public class Program
 {
     public static void main( String args[] ){
-        DatabaseManager dataManager = new DatabaseManager();
-        DataProvider dataProvider = new DataProvider(new FileNameProviderTest(), dataManager);
+        DataProvider dataProvider = new DataProvider(new FileNameProviderTest());
         dataProvider.insertListensData();
-        dataManager.selectListenRecord();
+        dataProvider.insertUniqueTracksData();
     }
 }

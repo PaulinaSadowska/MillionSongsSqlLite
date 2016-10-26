@@ -12,12 +12,6 @@ public class ListenRecord
     private String userId;
     private int timestamp;
 
-    public ListenRecord(){
-        this.songId = "";
-        this.userId = "";
-        this.timestamp = 0;
-    }
-
     public ListenRecord(String dataRow){
         String[] data = dataRow.split("<SEP>");
         this.userId = data[0];

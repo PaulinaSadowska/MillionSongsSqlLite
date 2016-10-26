@@ -11,12 +11,6 @@ public class UniqueTrack
     private String artist;
     private String title;
 
-    public UniqueTrack(){
-        this.songId = "";
-        this.performanceId = "";
-        this.artist = "";
-        this.title = "";
-    }
 
     public UniqueTrack(String dataRow){
         String[] data = dataRow.split("<SEP>");
@@ -30,6 +24,13 @@ public class UniqueTrack
             this.title = "";
         }
 
+    }
+
+    public UniqueTrack(String performanceId, String songId, String artist, String title){
+        this.performanceId = performanceId;
+        this.songId = songId;
+        this.artist = artist;
+        this.title = title;
     }
 
     public String getSongId()

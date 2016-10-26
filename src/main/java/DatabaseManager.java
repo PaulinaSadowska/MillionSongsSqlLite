@@ -1,4 +1,5 @@
 import dataObjects.ListenRecord;
+import dataObjects.UniqueTrack;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -11,7 +12,8 @@ public class DatabaseManager
 {
     public static final String DATABASE_URL = "jdbc:sqlite:million.songs.standard.database";
 
-    private static final String LISTEN_RECORD_TABLE = "listenRecord";
+    public static final String LISTEN_RECORD_TABLE = "listenRecord";
+    public static final String UNIQUE_TRACKS_TABLE = "uniqueTracks";
 
     private Connection connection = null;
     private Statement statement = null;
@@ -33,7 +35,21 @@ public class DatabaseManager
         try {
             statement.execute(createListenRecordQuery);
         } catch (SQLException e) {
-            System.err.println("Blad przy tworzeniu tabeli");
+            System.err.println("Error while creating record table");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean createUniqueTrackTable()  {
+        final String createListenRecordQuery =
+                "CREATE TABLE IF NOT EXISTS " + UNIQUE_TRACKS_TABLE + " (performanceId varchar(18), songId varchar(18), " +
+                        "artist varchar(80), title varchar(80));";
+        try {
+            statement.execute(createListenRecordQuery);
+        } catch (SQLException e) {
+            System.err.println("Error while creating tracks table");
             e.printStackTrace();
             return false;
         }
@@ -71,5 +87,54 @@ public class DatabaseManager
             return null;
         }
         return listenRecords;
+    }
+
+    public boolean insertUniqueTracksData(UniqueTrack uniqueTrack)
+    {
+        try {
+            PreparedStatement prepStmt = connection.prepareStatement(
+                    "insert into " + UNIQUE_TRACKS_TABLE + " values (?, ?, ?, ?);");
+            prepStmt.setString(1, uniqueTrack.getPerformanceId());
+            prepStmt.setString(2, uniqueTrack.getSongId());
+            prepStmt.setString(3, uniqueTrack.getArtist());
+            prepStmt.setString(4, uniqueTrack.getTitle());
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Error while inserting listen record");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public List<UniqueTrack> selectUniqueTracks() {
+        List<UniqueTrack> uniqueTracks = new LinkedList<>();
+        try {
+            ResultSet result = statement.executeQuery("SELECT * FROM " + UNIQUE_TRACKS_TABLE);
+            while(result.next()) {
+                String perfId = result.getString("performanceId");
+                String songId = result.getString("songId");
+                String userId = result.getString("artist");
+                String title = result.getString("title");
+                uniqueTracks.add(new UniqueTrack(perfId, songId, userId, title));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return uniqueTracks;
+    }
+
+
+    public void dropTable(String tableName)
+    {
+        final String dropTableQuery =
+                "DROP TABLE " + tableName;
+        try {
+            statement.execute(dropTableQuery);
+        } catch (SQLException e) {
+            System.err.println("Error while creating tracks table");
+            e.printStackTrace();
+        }
     }
 }

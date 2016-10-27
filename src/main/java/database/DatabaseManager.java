@@ -3,6 +3,7 @@ package database;
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public class DatabaseManager implements IDatabaseManager
 {
+
     @Override
     public boolean createListenRecordTable()
     {
@@ -35,19 +37,31 @@ public class DatabaseManager implements IDatabaseManager
     }
 
     @Override
-    public void insertUniqueTracksData(List<UniqueTrack> bulkedData)
+    public void insertUniqueTrackData(UniqueTrack track)
     {
 
     }
 
     @Override
-    public void insertListensRecord(List<ListenRecord> bulkedData)
+    public void insertListenRecord(ListenRecord record)
     {
 
     }
 
     @Override
-    public void dropTable(String tableName)
+    public void dropTable(String tableName) throws SQLException
+    {
+
+    }
+
+    @Override
+    public void setAutocommit(boolean isAutocommit) throws SQLException
+    {
+
+    }
+
+    @Override
+    public void commit() throws SQLException
     {
 
     }

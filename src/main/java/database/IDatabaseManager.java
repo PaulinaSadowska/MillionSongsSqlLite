@@ -3,6 +3,7 @@ package database;
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -19,10 +20,14 @@ public interface IDatabaseManager
 
     List<UniqueTrack> selectUniqueTracks();
 
-    void insertUniqueTracksData(List<UniqueTrack> bulkedData);
+    void insertUniqueTrackData(UniqueTrack track);
 
-    void insertListensRecord(List<ListenRecord> bulkedData);
+    void insertListenRecord(ListenRecord record);
 
-    void dropTable(String tableName);
+    void dropTable(String tableName) throws SQLException;
+
+    void setAutocommit(boolean isAutocommit) throws SQLException;
+
+    void commit() throws SQLException;
 
 }

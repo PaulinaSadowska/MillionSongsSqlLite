@@ -28,15 +28,10 @@ public class DatabaseManagerOld implements IDatabaseManager
         private ITableManager<UniqueTrack> uniqueTrackManager;
         private ITableManager<ListenRecord> listenRecordManager;
 
-        public DatabaseManagerOld()
+        public DatabaseManagerOld() throws SQLException
         {
-            try {
-                connection = DriverManager.getConnection(DATABASE_URL);
-                statement = connection.createStatement();
-                System.out.println("Opened database successfully");
-            } catch ( Exception e ) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            }
+            connection = DriverManager.getConnection(DATABASE_URL);
+            statement = connection.createStatement();
             uniqueTrackManager = new UniqueTrackTableManager();
             listenRecordManager = new ListenTableManager();
         }
@@ -61,29 +56,36 @@ public class DatabaseManagerOld implements IDatabaseManager
             return uniqueTrackManager.selectAll(statement);
         }
 
-        @Override
-        public void insertUniqueTracksData(List<UniqueTrack> bulkedData)
-        {
-            uniqueTrackManager.insertRecords(bulkedData, connection);
-        }
+    @Override
+    public void insertUniqueTrackData(UniqueTrack track)
+    {
+        uniqueTrackManager.insertRecord(track, connection);
+    }
 
-        @Override
-        public void insertListensRecord(List<ListenRecord> bulkedData)
-        {
-            listenRecordManager.insertRecords(bulkedData, connection);
-        }
+    @Override
+    public void insertListenRecord(ListenRecord record)
+    {
+        listenRecordManager.insertRecord(record, connection);
+    }
 
-        @Override
-        public void dropTable(String tableName)
-        {
+    @Override
+        public void dropTable(String tableName) throws SQLException
+    {
             final String dropTableQuery =
                     "DROP TABLE " + tableName;
-            try {
-                statement.execute(dropTableQuery);
-            } catch (SQLException e) {
-                System.err.println("Error while creating tracks table");
-                e.printStackTrace();
-            }
+            statement.execute(dropTableQuery);
         }
+
+    @Override
+    public void setAutocommit(boolean isAutocommit) throws SQLException
+    {
+        connection.setAutoCommit(isAutocommit);
+    }
+
+    @Override
+    public void commit() throws SQLException
+    {
+        connection.commit();
+    }
 
 }

@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 import java.util.stream.Stream;
 
 /**
@@ -22,57 +21,37 @@ public class DataProvider
     private IFileNameProvider _FileNameProvider;
     private IDatabaseManager _DatabaseManager;
 
-    private static final int BULK_SIZE = 700;
-
     public DataProvider(IFileNameProvider fileNameProvider, IDatabaseManager databaseManager){
         this._FileNameProvider = fileNameProvider;
         this._DatabaseManager = databaseManager;
     }
 
-    public void insertListensData()
+    public void insertListensData() throws SQLException
     {
         _DatabaseManager.dropTable(DatabaseManagerOld.LISTEN_RECORD_TABLE);
         _DatabaseManager.createListenRecordTable();
-        List<ListenRecord> bulkedData = new ArrayList<>();
+        _DatabaseManager.setAutocommit(false);
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName()))) {
-            stream.forEach(s -> {
-                bulkedData.add(new ListenRecord(s));
-                if (bulkedData.size() > BULK_SIZE)
-                {
-                    _DatabaseManager.insertListensRecord(bulkedData);
-                    bulkedData.clear();
-                }
-            });
-            if(bulkedData.size()>0)
-            {
-                _DatabaseManager.insertListensRecord(bulkedData);
-            }
+            stream.forEach(s -> _DatabaseManager.insertListenRecord(new ListenRecord(s)));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        _DatabaseManager.commit();
+        _DatabaseManager.setAutocommit(true);
     }
 
-    public void insertUniqueTracksData()
+    public void insertUniqueTracksData() throws SQLException
     {
         _DatabaseManager.dropTable(DatabaseManagerOld.UNIQUE_TRACKS_TABLE);
         _DatabaseManager.createUniqueTrackTable();
-        List<UniqueTrack> bulkedData = new ArrayList<>();
+        _DatabaseManager.setAutocommit(false);
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getSongsFileName()), StandardCharsets.ISO_8859_1)) {
-            stream.forEach(s -> {
-                bulkedData.add(new UniqueTrack(s));
-                if (bulkedData.size() > BULK_SIZE)
-                {
-                    _DatabaseManager.insertUniqueTracksData(bulkedData);
-                    bulkedData.clear();
-                }
-            });
-            if(bulkedData.size()>0)
-            {
-                _DatabaseManager.insertUniqueTracksData(bulkedData);
-            }
+            stream.forEach(s -> _DatabaseManager.insertUniqueTrackData(new UniqueTrack(s)));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        _DatabaseManager.commit();
+        _DatabaseManager.setAutocommit(true);
     }
 
 }

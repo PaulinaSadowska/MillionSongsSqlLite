@@ -3,7 +3,6 @@ package DataProvider;
 import dataObjects.DataSource;
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
-import database.DatabaseManagerOld;
 import database.IDatabaseManager;
 import directories.IFileNameProvider;
 
@@ -22,7 +21,8 @@ public class DataProvider
     private IFileNameProvider _FileNameProvider;
     private IDatabaseManager _DatabaseManager;
 
-    public DataProvider(IFileNameProvider fileNameProvider, IDatabaseManager databaseManager){
+    public DataProvider(IFileNameProvider fileNameProvider, IDatabaseManager databaseManager)
+    {
         this._FileNameProvider = fileNameProvider;
         this._DatabaseManager = databaseManager;
     }
@@ -31,9 +31,11 @@ public class DataProvider
     {
         _DatabaseManager.cleanTable(DataSource.LISTENS);
         _DatabaseManager.setAutocommit(false);
-        try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName()))) {
+        try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName())))
+        {
             stream.forEach(s -> _DatabaseManager.insertListenRecord(new ListenRecord(s)));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             _DatabaseManager.rollback();
             e.printStackTrace();
         }
@@ -45,9 +47,11 @@ public class DataProvider
     {
         _DatabaseManager.cleanTable(DataSource.TRACKS);
         _DatabaseManager.setAutocommit(false);
-        try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getSongsFileName()), StandardCharsets.ISO_8859_1)) {
+        try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getSongsFileName()), StandardCharsets.ISO_8859_1))
+        {
             stream.forEach(s -> _DatabaseManager.insertUniqueTrackData(new UniqueTrack(s)));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
         _DatabaseManager.commit();

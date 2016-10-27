@@ -95,24 +95,12 @@ public class DatabaseManager implements IDatabaseManager
             {
                 userTableManager.insertRecord(user, connection);
             }
-            if(date.isNew())
+            if (date.isNew())
             {
                 dateRecordTableManager.insertRecord(date, connection);
                 timeRecordTableManager.insertRecord(getTime(record, date.getDateId()), connection);
             }
             listenRecordManager.insertRecord(getListen(record, user.getUserId(), date.getDateId()), connection);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertDate()
-    {
-        try
-        {
-            dateRecordTableManager.insertRecord(getDate(new ListenRecord("as", "aas", 12345)), connection);
-            dateRecordTableManager.insertRecord(getDate(new ListenRecord("as", "aas", 12345)), connection);
         } catch (SQLException e)
         {
             e.printStackTrace();

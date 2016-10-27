@@ -60,21 +60,16 @@ public class DatabaseManagerOld implements IDatabaseManager
         }
     }
 
-    @Override
-    public void insertDate()
-    {
-
-    }
 
     @Override
     public void cleanTable(DataSource dataSource) throws SQLException
     {
         String cleanTableQuery = "DELETE FROM ";
-        if(dataSource == DataSource.LISTENS)
+        if (dataSource == DataSource.LISTENS)
         {
-             cleanTableQuery += LISTEN_RECORD_TABLE;
-        }
-        else{
+            cleanTableQuery += LISTEN_RECORD_TABLE;
+        } else
+        {
             cleanTableQuery += UNIQUE_TRACKS_TABLE;
         }
         statement.execute(cleanTableQuery);

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Paulina Sadowska on 26.10.2016.
  */
-public class DatabaseManagerOld
+public class DatabaseManagerOld implements IDatabaseManager
 {
 
         public static final String DATABASE_URL = "jdbc:sqlite:million.songs.standard.database";
@@ -41,33 +41,39 @@ public class DatabaseManagerOld
             listenRecordManager = new ListenTableManager();
         }
 
+        @Override
         public boolean createListenRecordTable()  {
             return listenRecordManager.createTable(statement);
         }
 
+        @Override
         public boolean createUniqueTrackTable()  {
             return uniqueTrackManager.createTable(statement);
         }
 
-
+        @Override
         public List<ListenRecord> selectListenRecord() {
             return listenRecordManager.selectAll(statement);
         }
 
+        @Override
         public List<UniqueTrack> selectUniqueTracks() {
             return uniqueTrackManager.selectAll(statement);
         }
 
+        @Override
         public void insertUniqueTracksData(List<UniqueTrack> bulkedData)
         {
             uniqueTrackManager.insertRecords(bulkedData, connection);
         }
 
+        @Override
         public void insertListensRecord(List<ListenRecord> bulkedData)
         {
             listenRecordManager.insertRecords(bulkedData, connection);
         }
 
+        @Override
         public void dropTable(String tableName)
         {
             final String dropTableQuery =

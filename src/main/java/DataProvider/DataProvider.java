@@ -22,7 +22,7 @@ public class DataProvider
     private IFileNameProvider _FileNameProvider;
     private IDatabaseManager _DatabaseManager;
 
-    private static final int BULK_SIZE = 400;
+    private static final int BULK_SIZE = 700;
 
     public DataProvider(IFileNameProvider fileNameProvider, IDatabaseManager databaseManager){
         this._FileNameProvider = fileNameProvider;

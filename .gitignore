@@ -7,3 +7,7 @@ target/generated-sources/
 *.iml
 .idea
 *.xml
+
+million.songs.standard.database
+million.songs.standard.database-journal
+target/

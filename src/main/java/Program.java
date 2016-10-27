@@ -1,3 +1,4 @@
+import database.DatabaseManager;
 import database.DatabaseManagerOld;
 import directories.FileNameProvider;
 import directories.FileNameProviderTest;
@@ -14,17 +15,17 @@ public class Program
 
         try
         {
-            DataProvider dataProvider = new DataProvider(new FileNameProvider(), new DatabaseManagerOld());
+            DataProvider dataProvider = new DataProvider(new FileNameProviderTest(), new DatabaseManager());
 
-            //System.out.println("inserting tracks...");
-            //long currentTime = System.currentTimeMillis();
-            //dataProvider.insertUniqueTracksData();
-            //System.out.println("inserting tracks took: " + (System.currentTimeMillis() - currentTime) + "ms");
-
-            System.out.println("inserting listens...");
+            System.out.println("inserting tracks...");
             long currentTime = System.currentTimeMillis();
-            dataProvider.insertListensData();
-            System.out.println("inserting listens took: " + (System.currentTimeMillis() - currentTime) + "ms");
+            dataProvider.insertUniqueTracksData();
+            System.out.println("inserting tracks took: " + (System.currentTimeMillis() - currentTime) + "ms");
+
+            //System.out.println("inserting listens...");
+            //currentTime = System.currentTimeMillis();
+            //dataProvider.insertListensData();
+            //System.out.println("inserting listens took: " + (System.currentTimeMillis() - currentTime) + "ms");
 
         }
         catch (SQLException e)

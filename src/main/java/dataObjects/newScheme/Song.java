@@ -16,17 +16,13 @@ public class Song
 
     public Song(String oldPerformanceId, String oldSongId, String artist, String title, int songId){
 
-        this.performanceId = IndexManager.getInstance().getAvailablePerformanceId();
+        this.performanceId = -1;
         this.songId = songId;
 
         this.oldPerformanceId = oldPerformanceId;
         this.oldSongId = oldSongId;
         this.artist = artist;
         this.title = title;
-    }
-
-    public Song(String oldPerformanceId, String oldSongId, String artist, String title){
-        this(oldPerformanceId, oldSongId, artist, title, IndexManager.getInstance().getAvailableSongId());
     }
 
     public int getPerformanceId()

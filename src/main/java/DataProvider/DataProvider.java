@@ -1,5 +1,6 @@
 package DataProvider;
 
+import dataObjects.DataSource;
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
 import database.DatabaseManagerOld;
@@ -28,8 +29,7 @@ public class DataProvider
 
     public void insertListensData() throws SQLException
     {
-        _DatabaseManager.dropTable(DatabaseManagerOld.LISTEN_RECORD_TABLE);
-        _DatabaseManager.createListenRecordTable();
+        _DatabaseManager.cleanTable(DataSource.LISTENS);
         _DatabaseManager.setAutocommit(false);
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName()))) {
             stream.forEach(s -> _DatabaseManager.insertListenRecord(new ListenRecord(s)));
@@ -42,8 +42,7 @@ public class DataProvider
 
     public void insertUniqueTracksData() throws SQLException
     {
-        _DatabaseManager.dropTable(DatabaseManagerOld.UNIQUE_TRACKS_TABLE);
-        _DatabaseManager.createUniqueTrackTable();
+        _DatabaseManager.cleanTable(DataSource.TRACKS);
         _DatabaseManager.setAutocommit(false);
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getSongsFileName()), StandardCharsets.ISO_8859_1)) {
             stream.forEach(s -> _DatabaseManager.insertUniqueTrackData(new UniqueTrack(s)));

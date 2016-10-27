@@ -1,6 +1,7 @@
 package database.table;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
@@ -9,8 +10,5 @@ import java.util.List;
  */
 public interface ITableManager<T>
 {
-    boolean createTable(Statement statement);
-    void insertRecords(List<T> records, Connection connection);
-    boolean insertRecord(T record, Connection connection);
-    List<T> selectAll(Statement statement);
+    void insertRecord(T record, Connection connection) throws SQLException;
 }

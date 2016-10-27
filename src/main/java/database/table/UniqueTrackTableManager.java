@@ -12,15 +12,16 @@ import java.util.List;
  */
 public class UniqueTrackTableManager implements ITableManager<UniqueTrack>
 {
-    @Override
     public boolean createTable(Statement statement)
     {
         final String createListenRecordQuery =
                 "CREATE TABLE IF NOT EXISTS " + DatabaseManagerOld.UNIQUE_TRACKS_TABLE + " (performanceId varchar(18), songId varchar(18), " +
                         "artist varchar(80), title varchar(80));";
-        try {
+        try
+        {
             statement.execute(createListenRecordQuery);
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             System.err.println("Error while creating tracks table");
             e.printStackTrace();
             return false;
@@ -28,35 +29,22 @@ public class UniqueTrackTableManager implements ITableManager<UniqueTrack>
         return true;
     }
 
-    @Override
-    public void insertRecords(List<UniqueTrack> records, Connection connection)
-    {
-        try
-        {
-            connection.setAutoCommit(false);
-            records.forEach(s -> insertRecord(s, connection));
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public List<UniqueTrack> selectAll(Statement statement)
     {
         List<UniqueTrack> uniqueTracks = new LinkedList<>();
-        try {
+        try
+        {
             ResultSet result = statement.executeQuery("SELECT * FROM " + DatabaseManagerOld.UNIQUE_TRACKS_TABLE);
-            while(result.next()) {
+            while (result.next())
+            {
                 String perfId = result.getString("performanceId");
                 String songId = result.getString("songId");
                 String userId = result.getString("artist");
                 String title = result.getString("title");
                 uniqueTracks.add(new UniqueTrack(perfId, songId, userId, title));
             }
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -64,21 +52,15 @@ public class UniqueTrackTableManager implements ITableManager<UniqueTrack>
     }
 
     @Override
-    public boolean insertRecord(UniqueTrack uniqueTrack, Connection connection)
+    public void insertRecord(UniqueTrack uniqueTrack, Connection connection) throws SQLException
     {
-        try {
-            PreparedStatement prepStmt = connection.prepareStatement(
-                    "insert into " + DatabaseManagerOld.UNIQUE_TRACKS_TABLE + " values (?, ?, ?, ?);");
-            prepStmt.setString(1, uniqueTrack.getPerformanceId());
-            prepStmt.setString(2, uniqueTrack.getSongId());
-            prepStmt.setString(3, uniqueTrack.getArtist());
-            prepStmt.setString(4, uniqueTrack.getTitle());
-            prepStmt.execute();
-        } catch (SQLException e) {
-            System.err.println("Error while inserting listen record");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        PreparedStatement prepStmt = connection.prepareStatement(
+                "insert into " + DatabaseManagerOld.UNIQUE_TRACKS_TABLE + " values (?, ?, ?, ?);");
+        prepStmt.setString(1, uniqueTrack.getPerformanceId());
+        prepStmt.setString(2, uniqueTrack.getSongId());
+        prepStmt.setString(3, uniqueTrack.getArtist());
+        prepStmt.setString(4, uniqueTrack.getTitle());
+        prepStmt.execute();
+        prepStmt.close();
     }
 }

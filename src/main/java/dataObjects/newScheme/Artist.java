@@ -11,7 +11,12 @@ public class Artist
     private String artist;
 
     public Artist(String artist){
-        this.artistId = IndexManager.getInstance().getAvailableArtistId();
+        this.artistId = -1;
+        this.artist = artist;
+    }
+
+    public Artist(String artist, int artistId){
+        this.artistId = artistId;
         this.artist = artist;
     }
 

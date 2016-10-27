@@ -22,10 +22,10 @@ public class Program
             dataProvider.insertUniqueTracksData();
             System.out.println("inserting tracks took: " + (System.currentTimeMillis() - currentTime) + "ms");
 
-            //System.out.println("inserting listens...");
-            //currentTime = System.currentTimeMillis();
-            //dataProvider.insertListensData();
-            //System.out.println("inserting listens took: " + (System.currentTimeMillis() - currentTime) + "ms");
+            System.out.println("inserting listens...");
+            currentTime = System.currentTimeMillis();
+            dataProvider.insertListensData();
+            System.out.println("inserting listens took: " + (System.currentTimeMillis() - currentTime) + "ms");
 
         }
         catch (SQLException e)

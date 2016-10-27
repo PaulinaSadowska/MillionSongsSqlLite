@@ -1,7 +1,5 @@
 package dataObjects.newScheme;
 
-import dataObjects.IndexManager;
-
 /**
  * Created by Paulina Sadowska on 26.10.2016.
  */

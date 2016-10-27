@@ -16,10 +16,14 @@ public interface IDatabaseManager
 
     void insertListenRecord(ListenRecord record);
 
+    void insertDate();
+
     void cleanTable(DataSource dataSource) throws SQLException;
 
     void setAutocommit(boolean isAutocommit) throws SQLException;
 
     void commit() throws SQLException;
+
+    void rollback() throws SQLException;
 
 }

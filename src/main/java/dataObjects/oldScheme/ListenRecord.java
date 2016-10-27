@@ -39,8 +39,4 @@ public class ListenRecord
     {
         return timestamp;
     }
-
-    public Date getDate(){
-        return new Date(timestamp);
-    }
 }

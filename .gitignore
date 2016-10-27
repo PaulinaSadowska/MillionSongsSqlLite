@@ -9,5 +9,7 @@ target/generated-sources/
 *.xml
 
 million.songs.standard.database
+million.songs.newscheme.database
 million.songs.standard.database-journal
+million.songs.newscheme.database-journal
 target/

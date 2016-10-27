@@ -1,7 +1,5 @@
 package dataObjects.newScheme;
 
-import dataObjects.IndexManager;
-
 /**
  * Created by Paulina Sadowska on 26.10.2016.
  */
@@ -13,12 +11,14 @@ public class Listen
     private int songId;
     private int dateId;
 
-    public Listen(){
-
+    public Listen(int userId, int songId, int dateId)
+    {
+        this(userId, songId, dateId, -1);
     }
 
-    public Listen(int userId, int songId, int dateId){
-        this.listenId = IndexManager.getInstance().getAvailableListenId();
+    public Listen(int userId, int songId, int dateId, int listenId)
+    {
+        this.listenId = listenId;
         this.userId = userId;
         this.songId = songId;
         this.dateId = dateId;

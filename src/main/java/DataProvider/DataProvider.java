@@ -34,6 +34,7 @@ public class DataProvider
         try (Stream<String> stream = Files.lines(Paths.get(_FileNameProvider.getTripletsFileName()))) {
             stream.forEach(s -> _DatabaseManager.insertListenRecord(new ListenRecord(s)));
         } catch (IOException e) {
+            _DatabaseManager.rollback();
             e.printStackTrace();
         }
         _DatabaseManager.commit();

@@ -4,7 +4,7 @@ import dataObjects.DataSource;
 import dataObjects.oldScheme.ListenRecord;
 import dataObjects.oldScheme.UniqueTrack;
 import database.table.ITableManager;
-import database.table.ListenTableManager;
+import database.table.ListenRecordTableManager;
 import database.table.UniqueTrackTableManager;
 
 import java.sql.Connection;
@@ -33,7 +33,7 @@ public class DatabaseManagerOld implements IDatabaseManager
         connection = DriverManager.getConnection(DATABASE_URL);
         statement = connection.createStatement();
         uniqueTrackManager = new UniqueTrackTableManager();
-        listenRecordManager = new ListenTableManager();
+        listenRecordManager = new ListenRecordTableManager();
     }
 
     @Override
@@ -61,6 +61,12 @@ public class DatabaseManagerOld implements IDatabaseManager
     }
 
     @Override
+    public void insertDate()
+    {
+
+    }
+
+    @Override
     public void cleanTable(DataSource dataSource) throws SQLException
     {
         String cleanTableQuery = "DELETE FROM ";
@@ -84,6 +90,12 @@ public class DatabaseManagerOld implements IDatabaseManager
     public void commit() throws SQLException
     {
         connection.commit();
+    }
+
+    @Override
+    public void rollback() throws SQLException
+    {
+        connection.rollback();
     }
 
 }

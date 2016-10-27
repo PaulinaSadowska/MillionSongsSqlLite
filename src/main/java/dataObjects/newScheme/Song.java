@@ -1,7 +1,5 @@
 package dataObjects.newScheme;
 
-import dataObjects.IndexManager;
-
 /**
  * Created by Paulina Sadowska on 26.10.2016.
  */
@@ -14,7 +12,8 @@ public class Song
     private String artist;
     private String title;
 
-    public Song(String oldPerformanceId, String oldSongId, String artist, String title, int songId){
+    public Song(String oldPerformanceId, String oldSongId, String artist, String title, int songId)
+    {
 
         this.performanceId = -1;
         this.songId = songId;
